@@ -1,5 +1,12 @@
 #Version history#
 
+#0.4.1 (02/14/2013)
+* named classes
+
+##0.4.0 (02/13/2013)
+* __init can be either be a table or a function
+* tostringable classes and objects 
+
 ##0.3.0 (09/01/13)
 * Added Class-Commons support (Thanks to [TsT2005](https://github.com/tst2005))
 * Added Tracis-CI validation

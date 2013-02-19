@@ -7,6 +7,16 @@ __30log__, in extenso *30 Lines Of Goodness* is a minified framework for [object
 It features __class creation__, __instantiation__, __single inheritance__ .<br/>
 And, it makes __30 lines__. No less, no more.
 
+##Contents
+* [Download](https://github.com/Yonaba/30log/#download)
+* [Installation](https://github.com/Yonaba/30log/#installation)
+* [Quicktour](https://github.com/Yonaba/30log/#quicktour)
+* [Chained initialisation](https://github.com/Yonaba/30log/#chained-initialisation)
+* [Printing classes and objects](https://github.com/Yonaba/30log/#printing-classes-and-objects)
+* [Class Commons support](https://github.com/Yonaba/30log/#class-commons-support)
+* [Specification](https://github.com/Yonaba/30log/#specification)
+* [Contributors](https://github.com/Yonaba/30log/#contributors)
+
 ##Download
 ###Bash
 
@@ -51,7 +61,16 @@ You can also shortcut it, passing the default properties as a table to <tt>class
 class = require '30log'
 Window = class { width = 100, height = 100, x = 10, y = 10}
 ```
+###Named classes
+As of [v0.4.1](https://github.com/Yonaba/30log/blob/master/version_history.md), classes can be named, setting manually a string value (corresponding to the name you want to set) to a special key named <tt>**__name**</tt>
 
+```lua
+class = require '30log'
+Window = class ()
+Window.__name = 'Window'
+```
+
+This feature can be quite useful when debugging your code. See [printing classes](https://github.com/Yonaba/30log/#printing-classes-and-objects) for more details.
 ###Instances
 
 Once a class is set, you can easily create new __instances__ from the class.
@@ -86,6 +105,19 @@ appFrame = Window:new(50,60,800,600)
 print(appFrame.x,appFrame.y) --> 50, 60
 print(appFrame.width,appFrame.height) --> 800, 600
 ```
+
+As of [v0.4.0](https://github.com/Yonaba/30log/blob/master/version_history.md), **<tt>__init**</tt> can also be a __table with named args__. </br>
+In that case though, each instances will keep the same values for their properties, no matter what the values passed-in to the <tt>**:new**</tt> method would be.
+
+```lua
+Window = class()
+Window.__init = { width = 100, height = 100, x = 10, y = 10}
+
+appFrame = Window:new(50,60,800,600)
+   -- or appFrame = Window(50,60,800,600)
+print(appFrame.x,appFrame.y) --> 10, 10
+print(appFrame.width,appFrame.height) --> 100, 100
+````
 
 ###Methods
 __Methods__ are supported. Obviously.
@@ -207,6 +239,33 @@ for k,v in pairs(objD) do print(k,v) end
 --> b	2
 ```
 
+##Printing classes and objects
+As of [v0.4.0](https://github.com/Yonaba/30log/blob/master/version_history.md), ay attempt to [print](http://pgl.yoyo.org/luai/i/print) or [tostring](http://pgl.yoyo.org/luai/i/tostring) 
+a __class__ or an __instance__ will return a special string, mostly useful when debugging.
+
+Let's illustrate this, with an unnamed __Cat__ class:
+
+```lua
+-- A Cat Class
+local Cat = class()
+print(Cat) --> "class (Unnamed): <table: 00550AD0>"
+
+local kitten = Cat()
+print(kitten) --> "object (of Unnamed): <table: 00550C10>"
+````
+
+Let's define a named __Cat__ class now:
+
+```lua
+-- A Cat Class
+local Cat = class()
+Cat.__name = 'Cat'
+print(Cat) --> "class (Cat): <table: 00411858>"
+
+local kitten = Cat()
+print(kitten) --> "object (of Cat): <table: 00411880>"
+````
+
 ##Class Commons support
 [Class-Commons](https://github.com/bartbes/Class-Commons) is an interface that provides a common API for lua classes libraries.
 
@@ -236,6 +295,10 @@ Attributes:
   can be passed in a table to Class()                                [P]
 Methods:                                                             
   can be added to classes                                            [P]
+tostring:                                                            
+  classes can be stringified                                         [P]
+named classes:                                                       
+  classes can be named implementing the special attribute __name     [P]
 ------------------------------------------------------------------------
 Derivation (Inheritance):                                            
 Class can be derived from a superclass:                              
@@ -262,8 +325,14 @@ When a class is created:
 Providing an :__init() method to classes:                            
   Overrides instantiation scheme with Class:new()                    [P]
   Overrides instantiation scheme with Class()                        [P]
+.__init can also be a table of named args for static instantiati...: 
+  Overrides instantiation scheme with Class:new()                    [P]
+  Overrides instantiation scheme with Class()                        [P]
+tostring:                                                            
+  objects can be stringified                                         [P]
+  the output takes into account the mother class name can be stri... [P]
 ------------------------------------------------------------------------
-20 tests 20 passed 35 assertions 0 failed 0 errors 0 unassertive 0 pending
+26 tests 26 passed 41 assertions 0 failed 0 errors 0 unassertive 0 pending
 ````
 
 ###Class-Commons testing implementation
