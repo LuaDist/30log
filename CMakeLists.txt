@@ -11,5 +11,5 @@ include ( lua )
 
 install_lua_module ( 30log 30log.lua )
 install_lua_module ( 30logclasscommons 30logclasscommons.lua )
-
+install_data ( specs )
 install_data ( MIT-LICENSE.txt README.md )

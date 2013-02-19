@@ -1,7 +1,7 @@
 --- This file is part of LuaDist project
 
 name = "30log"
-version = "0.3"
+version = "0.4.1"
 
 desc = "30 lines library for object orientation"
 author = "Roland Yonaba"
