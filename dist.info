@@ -1,0 +1,25 @@
+type = "x86"
+arch = "Windows"
+author = "Roland Yonaba"
+desc = "30 lines library for object orientation"
+name = "30log"
+maintainer = "Peter Drahoš"
+files = {
+Runtime = {
+[[lib\lua\30log.lua]],
+[[lib\lua\30logclasscommons.lua]],
+}
+,
+Data = {
+[[share\30log\\specs\class.lua]],
+[[share\30log\\specs\inheritance.lua]],
+[[share\30log\\specs\instantiation.lua]],
+[[share\30log\MIT-LICENSE.txt]],
+[[share\30log\README.md]],
+}
+,
+}
+
+license = "MIT"
+url = "http://yonaba.github.com/30log"
+version = "0.4.1"
