@@ -1,4 +1,4 @@
-local assert, pairs, type, tostring, baseMt, _instances, _classes, class =  assert, pairs, type, tostring, {}, {}, {}
+local assert, pairs, type, tostring, baseMt, _instances, _classes =  assert, pairs, type, tostring, {}, {}, {}
 local function deep_copy(t, dest, aType)
   local t, r = t or {}, dest or {}
   for k,v in pairs(t) do
