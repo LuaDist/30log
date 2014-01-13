@@ -9,8 +9,7 @@ local _classes =  {}
 local class
 
 local function deep_copy(t, dest, aType)
-  
-  local t or {}
+  local t = t or {}
   local r = dest or {}
   
   for k,v in pairs(t) do
@@ -26,11 +25,10 @@ local function deep_copy(t, dest, aType)
   end
   
   return r
-
 end
 
 local function instantiate(self,...)
-  
+  assert(_classes[self], 'new() should be called from a class.')
   local instance = deep_copy(self)
   _instances[instance] = tostring(instance)
   setmetatable(instance,self)
@@ -44,16 +42,15 @@ local function instantiate(self,...)
   end
   
   return instance
-  
 end
 
 local function extends(self,extra_params)
-  
-  local heirClass = deep_copy(self, class(extra_params))
-  heirClass.__index = heirClass
-  heirClass.super = self
-  return setmetatable(heirClass,self)
-  
+  local heir = {}
+  _classes[heir] = tostring(heir)
+  deep_copy(extra_params, deep_copy(self, heir))
+  heir.__index = heir
+  heir.super = self
+  return setmetatable(heir,self)
 end
 
 baseMt = {
@@ -65,23 +62,22 @@ baseMt = {
     if _instances[self] then
       return 
         ('object (of %s): <%s>')
-          :format((rawget(getmetatable(self),'__name') or 'Unnamed'), _instances[self])
+          :format((rawget(getmetatable(self),'__name') or '?'), _instances[self])
     end
     
     return
       _classes[self] and 
       ('class (%s): <%s>')
-        :format((rawget(self,'__name') or 'Unnamed'),_classes[self]) or 
+        :format((rawget(self,'__name') or '?'),_classes[self]) or 
       self      
   end
 }
 
 class = function(attr)
-  
   local c = deep_copy(attr)
   _classes[c] = tostring(c)
-  c.with = function(self,include)
-    assert(_classes[self], 'Mixins can only be used on classes')
+  c.include = function(self,include)
+    assert(_classes[self], 'Mixins can only be used on classes.')
     return deep_copy(include, self, 'function')
   end
   
@@ -91,7 +87,6 @@ class = function(attr)
   c.__call = baseMt.__call
   c.__tostring = baseMt.__tostring
   return setmetatable(c,baseMt)
-  
 end
 
 return class

@@ -10,7 +10,6 @@ include ( cmake/dist.cmake )
 include ( lua )
 
 install_lua_module ( 30log 30log.lua )
-install_lua_module ( 30logclasscommons 30logclasscommons.lua )
 install_lua_module ( 30logclean 30logclean.lua )
 install_lua_module ( 30logglobal 30logglobal.lua )
 

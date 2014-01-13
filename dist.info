@@ -1,10 +1,14 @@
 --- This file is part of LuaDist project
 
 name = "30log"
-version = "0.6.0"
+version = "0.8.0"
 
 desc = "30 lines library for object orientation"
 author = "Roland Yonaba"
 license = "MIT"
 url = "http://yonaba.github.com/30log"
 maintainer = "Peter Drahoš"
+
+depends = {
+   "lua >= 5.1"
+}
