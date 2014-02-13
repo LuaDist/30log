@@ -33,8 +33,8 @@ git clone git://github.com/Yonaba/30log.git
 
 ###Archive
 
-* __Zip__: [0.8.0](https://github.com/Yonaba/30log/archive/30log-0.8.0.zip) ( *latest stable, recommended* ) | [older versions](https://github.com/Yonaba/30log/tags)
-* __Tar.gz__: [0.8.0](https://github.com/Yonaba/30log/archive/30log-0.8.0.tar.gz) ( *latest stable, recommended* ) | [older versions](https://github.com/Yonaba/30log/tags)
+* __Zip__: [0.9.0](https://github.com/Yonaba/30log/archive/30log-0.9.0.zip) ( *latest stable, recommended* ) | [older versions](https://github.com/Yonaba/30log/tags)
+* __Tar.gz__: [0.9.0](https://github.com/Yonaba/30log/archive/30log-0.9.0.tar.gz) ( *latest stable, recommended* ) | [older versions](https://github.com/Yonaba/30log/tags)
 
 ###LuaRocks
 
@@ -86,6 +86,8 @@ This feature can be quite useful when debugging your code. See the section
 [printing classes](https://github.com/Yonaba/30log/#printing-classes-and-objects) for more details.
 
 ###Instances
+
+####Creating instances
 
 You can easily create new __instances__ (objects) from a class using the __default instantiation method__ 
 named `new()`:
@@ -140,6 +142,24 @@ print(appFrame.x,appFrame.y) --> 10, 10
 print(appFrame.width,appFrame.height) --> 100, 100
 ````
 
+####Under the hood
+*30log* classes are metatables of their own instances. This implies that one can inspect the mother/son 
+relationship between a class and its instance via Lua's standard function [getmetatable](http://www.lua.org/manual/5.2/manual.html#pdf-getmetatable).
+
+```lua
+local aClass = class()
+local someInstance = aClass()
+print(getmetatable(someInstance) == aClass) --> true
+````
+
+Also, classes are metatables of their derived classes.
+
+```lua
+local aClass = class()
+local someDerivedClass = aClass:extends()
+print(getmetatable(someDerivedClass) == aClass) --> true
+````
+
 ###Methods
 Objects can call their class __methods__.
 
@@ -174,6 +194,7 @@ aFrame = appFrame()     -- Also creates an error
 ````
 
 ###Inheritance
+
 A class can __inherit__ from any other class using a reserved method named `extends`.
 Similarly to `class`, this method also takes an optional table with named keys as argument 
 to include __new properties__ that the derived class will implement.
@@ -234,6 +255,42 @@ print(appFrame.x,appFrame.y) --> 0, 100
 appFrame.super.set(appFrame,400,300)
 print(appFrame.x,appFrame.y) --> 400, 300
 ```
+
+###Inspecting inheritance
+
+`class.is` can check if a given class derives from another class.
+
+```lua
+local aClass = class()
+local aDerivedClass = aClass:extends()
+print(aDerivedClass:is(aClass)) --> true
+````
+
+It also returns *true* when the given class is not necessarily the immediate ancestor of the calling class.
+
+```lua
+local aClass = class()
+local aDerivedClass = aClass:extends():extends():extends() -- 3-level depth inheritance
+print(aDerivedClass:is(aClass)) --> true
+````
+
+Similarly `instance.is` can check if a given instance derives from a given class.
+
+```lua
+local aClass = class()
+local anObject = aClass()
+print(anObject:is(aClass)) --> true
+````
+
+It also returns *true* when the given class is not the immediate ancestor.
+
+```lua
+local aClass = class()
+local aDerivedClass = aClass:extends():extends():extends() -- 3-level depth inheritance
+local anObject = aDerivedClass()
+print(anObject:is(aDerivedClass)) --> true
+print(anObject:is(aClass)) --> true
+````
 
 ##Chained initialisation
 In a single inheritance tree,  the `__init` constructor can be chained from one class to 
@@ -359,10 +416,10 @@ will return the name of the class as a string. This feature is mostly meant for 
 
 -- A Cat Class
 local Cat = class()
-print(Cat) --> "class (?): <table: 00550AD0>"
+print(Cat) --> "class(?):<table:00550AD0>"
 
 local kitten = Cat()
-print(kitten) --> "object (of ?): <table: 00550C10>"
+print(kitten) --> "object(of ?):<table:00550C10>"
 ````
 
 The question mark symbol `?` means here the printed class is unnamed (or the object derives from an unnamed class).
@@ -373,10 +430,10 @@ The question mark symbol `?` means here the printed class is unnamed (or the obj
 -- A Cat Class
 local Cat = class()
 Cat.__name = 'Cat'
-print(Cat) --> "class (Cat): <table: 00411858>"
+print(Cat) --> "class(Cat):<table:00411858>"
 
 local kitten = Cat()
-print(kitten) --> "object (of Cat): <table: 00411880>"
+print(kitten) --> "object(of Cat):<table:00411880>"
 ````
 
 ##Class Commons
